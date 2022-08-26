@@ -19,6 +19,8 @@
 
     SetBindings = () => {
 
+        //Book list
+
         $('.book-list__element').on('click', e => {
 
             if ($('.book-information').hasClass('d-none')) {
@@ -31,11 +33,37 @@
 
         });
 
-        $('#TitleSearchButton').on('click', () => {
+        //Search type
 
-            this.TitleSearch();
+        $('.search-options .form-check-input').on('change', () => {
+
+            const selected = $('.search-options .form-check-input:checked').val();
+
+            $('#SearchInput').attr('placeholder', selected);
+
+            $('#SearchInput').data('searchtype', selected);
 
         });
+
+        //Search bar and button
+
+        $('#SearchInput').on('keyup', e => {
+
+            if (e.key == 'Enter') {
+
+                this.BookSearch();
+
+            }
+
+        });
+
+        $('#SearchButton').on('click', () => {
+
+            this.BookSearch();
+
+        });
+
+        //Reset button
 
         $('#Reset').on('click', () => {
 
@@ -78,8 +106,6 @@
     }
 
     CreateList = () => {
-
-        this.selected = this.books[0].reference;
 
         this.books.forEach(book => {
 
@@ -141,17 +167,20 @@
 
                 this.CreateList();
 
+                $(`.book-list__element[data-reference="${this.selected}"]`).addClass('selected');
+
             });
 
     }
 
-    TitleSearch = () => {
+    BookSearch = () => {
 
-        const searchTerm = $('#TitleSearchInput').val().toLowerCase();
+        const searchTerm = $('#SearchInput').val().toLowerCase(),
+              searchType = $('#SearchInput').data('searchtype');
 
         if (searchTerm.trim() != '') {
 
-            fetch(`app/TitleSearch?searchTerm=${searchTerm}`)
+            fetch(`app/BookSearch?searchTerm=${searchTerm}&searchType=${searchType}`)
                 .then(response => response.json())
                 .then(data => {
 
@@ -215,7 +244,7 @@
 
                 $('.book-select-message').removeClass('d-none');
 
-                $('#TitleSearchInput').val('');
+                $('#SearchInput').val('');
 
             });
 

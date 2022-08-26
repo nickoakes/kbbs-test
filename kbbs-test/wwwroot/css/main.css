@@ -43,6 +43,10 @@
     border: 1px solid white;
 }
 
+.search-options {
+    color: white;
+}
+
 .books-pagination ul li a {
     background: #414345;
     color: white;

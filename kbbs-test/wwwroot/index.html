@@ -52,10 +52,31 @@
                     </div>
                 </div>
                 <div class="row my-3">
+                    <div class="col search-options">
+                        <span class="me-3">Search by:</span>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="searchOption" id="SearchOptionTitle" value="Title" checked>
+                            <label class="form-check-label" for="SearchOptionTitle">Title</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="searchOption" id="SearchOptionAuthor" value="Author">
+                            <label class="form-check-label" for="SearchOptionAuthor">Author</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="searchOption" id="SearchOptionGenre" value="Genre">
+                            <label class="form-check-label" for="SearchOptionGenre">Genre</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="searchOption" id="SearchOptionISBN" value="ISBN">
+                            <label class="form-check-label" for="SearchOptionISBN">ISBN</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="row my-3">
                     <div class="col-10 mx-auto">
                         <div class="input-group">
-                            <input type="text" class="form-control" placeholder="Title" id="TitleSearchInput">
-                            <button class="btn btn-outline-primary" type="button" id="TitleSearchButton">Search</button>
+                            <input type="text" class="form-control" placeholder="Title" id="SearchInput" data-searchtype="Title">
+                            <button class="btn btn-outline-primary" type="button" id="SearchButton">Search</button>
                         </div>
                     </div>
                     <div class="col-2">

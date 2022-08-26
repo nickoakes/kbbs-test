@@ -13,34 +13,57 @@ namespace kbbs_test.Controllers
     public class AppController : ControllerBase
     {
         [HttpGet]
-        public IEnumerable<Book> Get(int page)
+        public List<Book> Get(int page)
         {
-            if (HttpContext.Session.GetString("Books") == null)
+            try
             {
-                List<Book> allBooks = Helper.GenerateBooks(250);
+                if (HttpContext.Session.GetString("Books") == null)
+                {
+                    List<Book> allBooks = Helper.GenerateBooks(250);
 
-                HttpContext.Session.SetString("Books", JsonConvert.SerializeObject(allBooks)); //To keep the same overall set of books between requests
+                    HttpContext.Session.SetString("Books", JsonConvert.SerializeObject(allBooks)); //To keep the same overall set of books between requests
+                }
+
+                int index = page * 25;
+
+                List<Book> books = JsonConvert.DeserializeObject<List<Book>>(HttpContext.Session.GetString("Books")).GetRange(index, 25);
+
+                return books;
+            } 
+            catch (Exception ex)
+            {
+                Helper.LogException(ex);
+
+                return new List<Book>();
             }
-
-            int index = page * 25;
-
-            List<Book> books = JsonConvert.DeserializeObject<List<Book>>(HttpContext.Session.GetString("Books")).GetRange(index, 25);
-
-            return books;
         }
 
         [HttpGet("BookCount")]
         public int BookCount()
         {
-            return JsonConvert.DeserializeObject<List<Book>>(HttpContext.Session.GetString("Books")).Count;
+            try
+            {
+                return JsonConvert.DeserializeObject<List<Book>>(HttpContext.Session.GetString("Books")).Count;
+            } 
+            catch(Exception ex)
+            {
+                Helper.LogException(ex);
+
+                return 0;
+            }
         }
 
-        [HttpGet("TitleSearch")]
-        public List<Book> TitleSearch(string searchTerm)
+        [HttpGet("BookSearch")]
+        public List<Book> BookSearch(string searchTerm, string searchType)
         {
             try
             {
-                return JsonConvert.DeserializeObject<List<Book>>(HttpContext.Session.GetString("Books")).Where(x => x.Title.ToLower().Contains(searchTerm)).ToList();
+                return JsonConvert.DeserializeObject<List<Book>>(HttpContext.Session.GetString("Books")).Where(x => x.GetType()
+                                                                                                                     .GetProperty(searchType)
+                                                                                                                     .GetValue(x)
+                                                                                                                     .ToString()
+                                                                                                                     .ToLower()
+                                                                                                                     .Contains(searchTerm)).ToList();
             }
             catch (Exception ex)
             {
