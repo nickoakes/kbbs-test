@@ -1,6 +1,7 @@
 ﻿using kbbs_test.Models;
 using System;
 using System.Collections.Generic;
+using System.IO;
 
 namespace kbbs_test
 {
@@ -29,7 +30,7 @@ namespace kbbs_test
         };
 
         /// <summary>
-        /// Takes between one and four random words and generates a book title
+        /// Takes between one and three random words and generates a book title
         /// </summary>
         /// <returns></returns>
         public static string GenerateTitle()
@@ -58,7 +59,7 @@ namespace kbbs_test
 
             for(int i = 0; i < sectionLength; i++)
             {
-                result += _rnd.Next(9).ToString();
+                result += _rnd.Next(10).ToString();
             }
 
             return result;
@@ -72,7 +73,7 @@ namespace kbbs_test
         {
             string[] prefix = new string[] { "978", "979" };
 
-            return $"{prefix[_rnd.Next(1)]}-{GenerateISBNSection(1)}-{GenerateISBNSection(5)}-{GenerateISBNSection(3)}-{GenerateISBNSection(1)}";
+            return $"{prefix[_rnd.Next(2)]}-{GenerateISBNSection(1)}-{GenerateISBNSection(5)}-{GenerateISBNSection(3)}-{GenerateISBNSection(1)}";
         }
 
         /// <summary>
@@ -88,17 +89,39 @@ namespace kbbs_test
                 int yearPublished = DateTime.Now.AddYears(-(_rnd.Next(200))).Year,
                     pageCount = 1000 - _rnd.Next(700);
 
-                string author = $"{_FirstNames[_rnd.Next(_FirstNames.Length - 1)]} {_LastNames[_rnd.Next(_FirstNames.Length - 1)]}";
+                string author = $"{_FirstNames[_rnd.Next(_FirstNames.Length)]} {_LastNames[_rnd.Next(_LastNames.Length)]}";
 
                 result.Add(new Book(GenerateTitle(),
                                     author,
                                     GenerateISBN(),
-                                    _Genres[_rnd.Next(_Genres.Length - 1)],
+                                    _Genres[_rnd.Next(_Genres.Length)],
                                     yearPublished,
                                     pageCount));
             }
 
             return result;
+        }
+
+        /// <summary>
+        /// Writes exception messages to errorLog.txt, with timestamps
+        /// </summary>
+        /// <param name="ex"></param>
+        public static void LogException(Exception ex)
+        {
+            using (StreamWriter streamWriter = new StreamWriter($"{Environment.CurrentDirectory}/errorLog.txt", true))
+            {
+                streamWriter.WriteLine("-------------------------------");
+
+                streamWriter.WriteLine(DateTime.Now.ToString());
+
+                streamWriter.WriteLine();
+
+                streamWriter.WriteLine(ex.Message);
+
+                streamWriter.WriteLine("-------------------------------");
+
+                streamWriter.WriteLine();
+            }
         }
     }
 }
